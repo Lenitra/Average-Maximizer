@@ -1,0 +1,141 @@
+/* style.css */
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Fieldset styles for both UE et Matière */
+fieldset {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Style spécifique pour les UE */
+.ue {
+    background-color: #e7f0fd; /* bleu très clair */
+    border-color: #4a90e2;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style spécifique pour les Matières */
+.matiere {
+    background-color: #fdf3e7; /* orange très clair */
+    border-color: #f5a623;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    margin: 15px 0;
+    padding: 10px;
+}
+
+/* Legend styles */
+legend {
+    font-weight: bold;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Conteneur à gauche du legend */
+.legend-left {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+/* Moyenne input dans le legend (aligné à droite) */
+.moyenne-input {
+    width: 80px;
+    text-align: right;
+}
+
+/* Style global pour les inputs texte et nombre */
+input[type="text"],
+input[type="number"] {
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+/* Spécifique pour les inputs dans la zone legend-left (UE et Matière) */
+.legend-left input[type="text"] {
+    width: 150px;
+}
+
+.legend-left input[type="number"] {
+    width: 60px;
+}
+
+/* Ajustement des inputs dans les notes */
+.note input[type="number"],
+.note input[type="text"] {
+    width: 70px;
+    margin: 5px 10px 5px 0;
+}
+
+/* Notes container */
+.notes {
+    margin-top: 10px;
+    padding-left: 15px;
+}
+
+/* Note block styles */
+.note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.note label {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+/* Style pour les checkboxes dans les notes */
+.note input[type="checkbox"] {
+    margin: 0 5px 0 10px;
+}
+
+/* Bouton dans les notes */
+.note button {
+    margin-left: 10px;
+}
+
+/* Bouton styles généraux */
+button {
+    padding: 5px 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+}
+
+button:hover {
+    background-color: #d0d0d0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .note {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .note input[type="number"],
+    .note input[type="text"] {
+        width: 100%;
+        margin-right: 0;
+    }
+}
