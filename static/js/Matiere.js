@@ -20,6 +20,7 @@ export class Matiere {
         return this;
     }
 
+
     calculateMoyenne() {
         let total = 0, totalCoef = 0;
         this.notes.forEach(note => {
