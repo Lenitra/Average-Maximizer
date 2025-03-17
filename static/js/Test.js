@@ -1,6 +1,7 @@
 // script.js
 
 // Classe représentant une Note
+// Classe représentant une Note
 class Note {
     constructor(parentMatiere, noteNumber) {
         this.parentMatiere = parentMatiere;
@@ -28,6 +29,7 @@ class Note {
         labelLocked.textContent = '🔒';
         this.lockedInput = document.createElement('input');
         this.lockedInput.type = 'checkbox';
+        // L'écouteur initial est supprimé pour ne pas mettre à jour directement ici
 
         // Bouton pour supprimer la note avec emoji
         this.deleteButton = document.createElement('button');
@@ -43,6 +45,13 @@ class Note {
         this.element.appendChild(labelLocked);
         this.element.appendChild(this.lockedInput);
         this.element.appendChild(this.deleteButton);
+    }
+
+    // Méthode de mise à jour de l'état verrouillé de la note
+    updateLockState() {
+        const isLocked = this.lockedInput.checked;
+        this.valueInput.disabled = isLocked;
+        this.coefInput.disabled = isLocked;
     }
 
     // Méthode de suppression de la note
@@ -67,6 +76,7 @@ class Note {
         return this.lockedInput.checked;
     }
 }
+
 
 // Classe représentant une Matière
 class Matiere {
@@ -169,6 +179,13 @@ class Matiere {
         this.moyenneInput.value = this.computeAverage().toFixed(2);
     }
 
+    // Méthode de mise à jour du background en fonction des notes verrouillées
+    updateLockState() {
+        const allLocked = this.notes.length > 0 && this.notes.every(note => note.isLocked());
+        this.element.style.backgroundColor = allLocked ? 'rgba(32, 153, 32, 0.2)' : '';
+        this.element.style.border = allLocked ? '1px solid green' : '';
+    }
+
     // Supprime la matière de l'interface et du parent UE
     delete() {
         this.element.remove();
@@ -176,6 +193,9 @@ class Matiere {
         this.parentUE.parentCalculator.updateAll();
     }
 }
+
+
+
 
 // Classe représentant une UE
 class UE {
@@ -328,6 +348,25 @@ class Calculator {
         this.addUEButton.textContent = '➕ Ajouter une UE';
         this.container.appendChild(this.addUEButton);
         this.addUEButton.addEventListener('click', () => this.addUE());
+
+        // Ajout 'un bouton d'import et d'export
+        const importButton = document.createElement('button');
+        importButton.textContent = '📥 Importer'
+        importButton.style.marginRight = '10px';
+        importButton.style.marginTop = '10px';
+        importButton.id = 'importButton';
+
+        const exportButton = document.createElement('button');
+        exportButton.textContent = '📤 Exporter'
+        exportButton.style.marginTop = '10px';
+        exportButton.id = 'exportButton';
+
+        document.body.appendChild(importButton);
+        document.body.appendChild(exportButton);
+
+        importButton.addEventListener('click', () => this.importData());
+        exportButton.addEventListener('click', () => this.exportData());
+
     }
 
     // Ajoute une UE au calculateur
@@ -364,13 +403,115 @@ class Calculator {
     updateAll() {
         this.ues.forEach(ue => {
             ue.matieres.forEach(matiere => {
+                // Met à jour l'état verrouillé de chaque note
+                matiere.notes.forEach(note => note.updateLockState());
+                // Met à jour le background de la matière
+                matiere.updateLockState();
+                // Met à jour la moyenne de la matière
                 matiere.updateAverage();
             });
             ue.updateAverage();
         });
         this.updateGeneralAverage();
     }
+
+    // Méthode pour exporter les données du calculateur
+    exportData() {
+        const data = {
+            noteGenerale: this.noteGeneraleInput.value,
+            ues: this.ues.map(ue => ({
+                name: ue.nameInput.value,
+                coef: ue.coefInput.value,
+                matieres: ue.matieres.map(matiere => ({
+                    name: matiere.nameInput.value,
+                    coef: matiere.coefInput.value,
+                    moyenne: matiere.moyenneInput.value,
+                    notes: matiere.notes.map(note => ({
+                        value: note.valueInput.value,
+                        coef: note.coefInput.value,
+                        locked: note.lockedInput.checked
+                    }))
+                }))
+            }))
+        };
+        const dataStr = JSON.stringify(data);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Méthode pour importer les données du calculateur
+    // Méthode d'importation refaite dans la classe Calculator
+    importData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+
+        input.onchange = async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text(); // Lecture du contenu du fichier en mode asynchrone
+                const data = JSON.parse(text);
+
+                // Réinitialisation de l'interface
+                this.noteGeneraleInput.value = data.noteGenerale;
+                // Supprime toutes les UE existantes
+                this.ues.forEach(ue => ue.element.remove());
+                this.ues = [];
+
+                // Reconstruit l'ensemble des UE à partir des données importées
+                data.ues.forEach(ueData => {
+                    const ue = new UE(this);
+                    ue.nameInput.value = ueData.name;
+                    ue.coefInput.value = ueData.coef;
+
+                    // Supprime la matière par défaut ajoutée lors de la création de l'UE
+                    ue.matieres.forEach(matiere => matiere.element.remove());
+                    ue.matieres = [];
+
+                    ueData.matieres.forEach(matiereData => {
+                        const matiere = new Matiere(ue);
+                        matiere.nameInput.value = matiereData.name;
+                        matiere.coefInput.value = matiereData.coef;
+                        matiere.moyenneInput.value = matiereData.moyenne;
+
+                        // Supprime la note par défaut ajoutée lors de la création de la matière
+                        matiere.notes.forEach(note => note.element.remove());
+                        matiere.notes = [];
+
+                        matiereData.notes.forEach(noteData => {
+                            const note = new Note(matiere, matiere.notes.length + 1);
+                            note.valueInput.value = noteData.value;
+                            note.coefInput.value = noteData.coef;
+                            note.lockedInput.checked = noteData.locked;
+                            // Insère la note avant le bouton "Ajouter une note"
+                            matiere.notes.push(note);
+                            matiere.notesContainer.insertBefore(note.element, matiere.addNoteButton);
+                        });
+                        ue.matieres.push(matiere);
+                        ue.matieresContainer.appendChild(matiere.element);
+                    });
+                    this.ues.push(ue);
+                    this.ueContainer.appendChild(ue.element);
+                });
+
+                this.updateAll();
+            } catch (error) {
+                console.error('Erreur lors de l\'importation du fichier:', error);
+            }
+        };
+
+        input.click();
+    }
+
 }
+
 
 // Dès que le DOM est chargé, on vide le body et on initialise le calculateur
 document.addEventListener('DOMContentLoaded', () => {
@@ -381,17 +522,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mise à jour des moyennes dès qu'un input de type number change
     document.body.addEventListener('change', event => {
-        if (event.target && event.target.matches('input[type="number"]')) {
+        if (event.target && (event.target.matches('input[type="number"]') || event.target.matches('input[type="checkbox"]'))) {
             calculator.updateAll();
         }
     });
+
+
+
 });
 
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     const legend = event.target.closest('.ue .collapse-btn');
     if (legend) {
-      const ueFieldset = legend.parentElement;
-      ueFieldset.classList.toggle('collapsed');
+        const ueFieldset = legend.parentElement;
+        ueFieldset.classList.toggle('collapsed');
     }
-  });
+});
