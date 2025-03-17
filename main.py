@@ -1,10 +1,11 @@
 from flask import Flask
+from flask import render_template
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Welcome to the Average Maximizer!"
+    return render_template('calculator.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

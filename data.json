@@ -1,5 +1,5 @@
 {
-  "noteGenerale": "15.25",
+  "noteGenerale": "15.62",
   "ues": [
     {
       "name": "UV 1 ",
@@ -8,7 +8,7 @@
         {
           "name": "Base  sur les résaux",
           "coef": "2",
-          "moyenne": "10.3",
+          "moyenne": "10.30",
           "notes": [{ "value": "10.3", "coef": "2", "locked": true }]
         },
         {
@@ -26,7 +26,7 @@
         {
           "name": "HTML/CSS",
           "coef": "4",
-          "moyenne": "19.5",
+          "moyenne": "19.50",
           "notes": [{ "value": "19.5", "coef": "1", "locked": true }]
         }
       ]
@@ -50,15 +50,15 @@
         {
           "name": "COO",
           "coef": "2",
-          "moyenne": "13.00",
-          "notes": [{ "value": "13", "coef": "1", "locked": false }]
+          "moyenne": "15.00",
+          "notes": [{ "value": "15", "coef": "1", "locked": false }]
         },
         {
           "name": "JavaBase",
           "coef": "4",
-          "moyenne": "15.00",
+          "moyenne": "15.83",
           "notes": [
-            { "value": "15", "coef": "1", "locked": false },
+            { "value": "16.667", "coef": "1", "locked": true },
             { "value": "15", "coef": "1", "locked": false }
           ]
         },
@@ -71,8 +71,8 @@
         {
           "name": "XML",
           "coef": "2",
-          "moyenne": "14.00",
-          "notes": [{ "value": "14", "coef": "1", "locked": false }]
+          "moyenne": "17.00",
+          "notes": [{ "value": "17", "coef": "1", "locked": false }]
         },
         {
           "name": "BDD",
@@ -89,10 +89,10 @@
         {
           "name": "SQL",
           "coef": "3",
-          "moyenne": "15.13",
+          "moyenne": "16.47",
           "notes": [
             { "value": "19.4", "coef": "1", "locked": true },
-            { "value": "13", "coef": "2", "locked": false }
+            { "value": "15", "coef": "2", "locked": false }
           ]
         },
         {
