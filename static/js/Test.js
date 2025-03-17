@@ -230,6 +230,16 @@ class UE {
         this.element.appendChild(this.deleteButton);
         this.deleteButton.addEventListener('click', () => this.delete());
 
+        // Bouton pour collapser/déplier l'UE
+        this.collapseButton = document.createElement('button');
+        this.collapseButton.type = 'button';
+        this.collapseButton.textContent = '🔽';
+        this.collapseButton.style.position = 'absolute';
+        this.collapseButton.style.top = '5px';
+        this.collapseButton.style.right = '50px';
+        this.collapseButton.classList.add('collapse-btn');
+        this.element.appendChild(this.collapseButton);
+
         // Container pour les matières
         this.matieresContainer = document.createElement('div');
         this.element.appendChild(this.matieresContainer);
@@ -376,3 +386,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+document.addEventListener('click', function(event) {
+    const legend = event.target.closest('.ue .collapse-btn');
+    if (legend) {
+      const ueFieldset = legend.parentElement;
+      ueFieldset.classList.toggle('collapsed');
+    }
+  });

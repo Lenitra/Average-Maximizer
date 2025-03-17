@@ -22,14 +22,16 @@ fieldset {
 
 /* Style spécifique pour les UE */
 .ue {
-    background-color: #e7f0fd; /* bleu très clair */
+    background-color: #e7f0fd;
+    /* bleu très clair */
     border-color: #4a90e2;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Style spécifique pour les Matières */
 .matiere {
-    background-color: #fdf3e7; /* orange très clair */
+    background-color: #fdf3e7;
+    /* orange très clair */
     border-color: #f5a623;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
     margin: 15px 0;
@@ -138,4 +140,14 @@ button:hover {
         width: 100%;
         margin-right: 0;
     }
+}
+
+
+.ue.collapsed>div,
+.ue.collapsed>button:not(.delete-btn):not(.collapse-btn) {
+    display: none;
+}
+
+.ue legend {
+    cursor: pointer;
 }
