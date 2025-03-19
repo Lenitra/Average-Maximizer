@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Arborescence : UE, Matières et Notes (avec Note et Coeff partout)</title>
+  <style>
+    /* Styles généraux */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Conteneur de l'arborescence */
+    .tree {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Liste de l'arborescence */
+    .tree ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0 0 0 1.5rem; /* Légère indentation */
+      position: relative;
+    }
+    
+    /* Chaque élément (UE, Matière ou Note) */
+    .tree li {
+      position: relative;
+      margin: 0.5rem 0;
+      padding-left: 1.2rem; /* Espace pour le bouton de toggling */
+      line-height: 1.4;
+    }
+    
+    /*
+      Les pseudo-éléments dessinent les traits verticaux et horizontaux
+      pour donner un effet "arbre".
+    */
+    .tree li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.9rem;
+      width: 1rem;
+      height: 0;
+      border-bottom: 1px solid #ccc; /* Trait horizontal */
+    }
+    .tree li::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid #ccc;   /* Trait vertical */
+    }
+    /* On coupe le trait vertical pour le dernier élément du parent */
+    .tree li:last-child::after {
+      height: 0.9rem;
+    }
+
+    /* Styles pour les dossiers (UE, Matière) et les notes */
+    .folder > .label {
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .file > .label {
+      font-style: italic;
+      cursor: default;
+    }
+
+    /* Bouton de collapse/expand */
+    .toggle-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      margin-right: 0.3rem;
+      font-size: 0.9rem;
+    }
+    .toggle-btn:hover,
+    .toggle-btn:focus {
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    /* Inputs de note et de coefficient */
+    .attributes {
+      margin-left: auto;
+      display: inline-flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-left: 1rem; /* Décalage pour séparer les inputs du nom */
+    }
+    .attributes label {
+      font-size: 0.85rem;
+    }
+    .attributes input {
+      width: 60px;
+      padding: 0.2rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    /* Masquer les sous-listes */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Arborescence : UE, Matières et Notes</h1>
+  <div class="tree" role="tree">
+    <ul>
+      <!-- Ensemble principal (ex: un semestre ou un programme) -->
+      <li class="folder" role="treeitem" aria-expanded="true">
+        <button class="toggle-btn" aria-label="Réduire/Développer">[-]</button>
+        <span class="label">Programme</span>
+        <span class="attributes">
+          <!-- Note/Coef pour le "Programme" global, si nécessaire -->
+          <label>Note: <input type="number" value="0" aria-label="Note pour Programme"></label>
+          <label>Coeff: <input type="number" value="1" aria-label="Coeff pour Programme"></label>
+        </span>
+        <ul role="group">
+          <!-- UE 1 -->
+          <li class="folder" role="treeitem" aria-expanded="true">
+            <button class="toggle-btn" aria-label="Réduire/Développer">[-]</button>
+            <span class="label">UE 1</span>
+            <span class="attributes">
+              <label>Note: <input type="number" value="0" aria-label="Note pour UE 1"></label>
+              <label>Coeff: <input type="number" value="1" aria-label="Coeff pour UE 1"></label>
+            </span>
+            <ul role="group">
+              <!-- Matière A -->
+              <li class="folder" role="treeitem" aria-expanded="true">
+                <button class="toggle-btn" aria-label="Réduire/Développer">[-]</button>
+                <span class="label">Matière A</span>
+                <span class="attributes">
+                  <label>Note: <input type="number" value="0" aria-label="Note pour Matière A (UE1)"></label>
+                  <label>Coeff: <input type="number" value="1" aria-label="Coeff pour Matière A (UE1)"></label>
+                </span>
+                <ul role="group">
+                  <li class="file" role="treeitem">
+                    <span class="label">Note 1</span>
+                    <span class="attributes">
+                      <label>Note: <input type="number" value="0" aria-label="Note 1 pour Matière A"></label>
+                      <label>Coeff: <input type="number" value="1" aria-label="Coeff de Note 1"></label>
+                    </span>
+                  </li>
+                  <li class="file" role="treeitem">
+                    <span class="label">Note 2</span>
+                    <span class="attributes">
+                      <label>Note: <input type="number" value="0" aria-label="Note 2 pour Matière A"></label>
+                      <label>Coeff: <input type="number" value="1" aria-label="Coeff de Note 2"></label>
+                    </span>
+                  </li>
+                </ul>
+              </li>
+              <!-- Matière B -->
+              <li class="folder" role="treeitem" aria-expanded="true">
+                <button class="toggle-btn" aria-label="Réduire/Développer">[-]</button>
+                <span class="label">Matière B</span>
+                <span class="attributes">
+                  <label>Note: <input type="number" value="0" aria-label="Note pour Matière B (UE1)"></label>
+                  <label>Coeff: <input type="number" value="1" aria-label="Coeff pour Matière B (UE1)"></label>
+                </span>
+                <ul role="group">
+                  <li class="file" role="treeitem">
+                    <span class="label">Note 3</span>
+                    <span class="attributes">
+                      <label>Note: <input type="number" value="0" aria-label="Note 3 pour Matière B"></label>
+                      <label>Coeff: <input type="number" value="1" aria-label="Coeff de Note 3"></label>
+                    </span>
+                  </li>
+                  <li class="file" role="treeitem">
+                    <span class="label">Note 4</span>
+                    <span class="attributes">
+                      <label>Note: <input type="number" value="0" aria-label="Note 4 pour Matière B"></label>
+                      <label>Coeff: <input type="number" value="1" aria-label="Coeff de Note 4"></label>
+                    </span>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+
+          <!-- UE 2 -->
+          <li class="folder" role="treeitem" aria-expanded="true">
+            <button class="toggle-btn" aria-label="Réduire/Développer">[-]</button>
+            <span class="label">UE 2</span>
+            <span class="attributes">
+              <label>Note: <input type="number" value="0" aria-label="Note pour UE 2"></label>
+              <label>Coeff: <input type="number" value="1" aria-label="Coeff pour UE 2"></label>
+            </span>
+            <ul role="group">
+              <!-- Matière A -->
+              <li class="folder" role="treeitem" aria-expanded="true">
+                <button class="toggle-btn" aria-label="Réduire/Développer">[-]</button>
+                <span class="label">Matière A</span>
+                <span class="attributes">
+                  <label>Note: <input type="number" value="0" aria-label="Note pour Matière A (UE2)"></label>
+                  <label>Coeff: <input type="number" value="1" aria-label="Coeff pour Matière A (UE2)"></label>
+                </span>
+                <ul role="group">
+                  <li class="file" role="treeitem">
+                    <span class="label">Note 5</span>
+                    <span class="attributes">
+                      <label>Note: <input type="number" value="0" aria-label="Note 5 pour Matière A"></label>
+                      <label>Coeff: <input type="number" value="1" aria-label="Coeff de Note 5"></label>
+                    </span>
+                  </li>
+                  <li class="file" role="treeitem">
+                    <span class="label">Note 6</span>
+                    <span class="attributes">
+                      <label>Note: <input type="number" value="0" aria-label="Note 6 pour Matière A"></label>
+                      <label>Coeff: <input type="number" value="1" aria-label="Coeff de Note 6"></label>
+                    </span>
+                  </li>
+                </ul>
+              </li>
+              <!-- Matière B -->
+              <li class="folder" role="treeitem" aria-expanded="true">
+                <button class="toggle-btn" aria-label="Réduire/Développer">[-]</button>
+                <span class="label">Matière B</span>
+                <span class="attributes">
+                  <label>Note: <input type="number" value="0" aria-label="Note pour Matière B (UE2)"></label>
+                  <label>Coeff: <input type="number" value="1" aria-label="Coeff pour Matière B (UE2)"></label>
+                </span>
+                <ul role="group">
+                  <li class="file" role="treeitem">
+                    <span class="label">Note 7</span>
+                    <span class="attributes">
+                      <label>Note: <input type="number" value="0" aria-label="Note 7 pour Matière B"></label>
+                      <label>Coeff: <input type="number" value="1" aria-label="Coeff de Note 7"></label>
+                    </span>
+                  </li>
+                  <li class="file" role="treeitem">
+                    <span class="label">Note 8</span>
+                    <span class="attributes">
+                      <label>Note: <input type="number" value="0" aria-label="Note 8 pour Matière B"></label>
+                      <label>Coeff: <input type="number" value="1" aria-label="Coeff de Note 8"></label>
+                    </span>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    // Gestion des boutons pour afficher/masquer les sous-listes
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggleButtons = document.querySelectorAll('.toggle-btn');
+      toggleButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const parentLi = this.parentElement;
+          const childUl = parentLi.querySelector("ul");
+          if(childUl) {
+            if(childUl.classList.contains("hidden")) {
+              childUl.classList.remove("hidden");
+              this.textContent = "[-]";
+              parentLi.setAttribute("aria-expanded", "true");
+            } else {
+              childUl.classList.add("hidden");
+              this.textContent = "[+]";
+              parentLi.setAttribute("aria-expanded", "false");
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
