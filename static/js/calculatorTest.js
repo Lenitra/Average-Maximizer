@@ -3,194 +3,256 @@
 // Classe représentant une Note
 // Classe représentant une Note
 class Note {
-    constructor(parentMatiere, noteNumber) {
-        this.parentMatiere = parentMatiere;
-        this.noteNumber = noteNumber;
-        this.element = document.createElement('div');
-        this.element.className = 'note';
+    constructor(htmlParent) {
+        this.note = 10;
+        this.coef = 1;
+        this.locked = false;
 
-        // Label et input pour la valeur de la note
-        const labelNote = document.createElement('label');
-        labelNote.textContent = `📝 Note ${this.noteNumber} :`;
-        this.valueInput = document.createElement('input');
-        this.valueInput.type = 'number';
-        this.valueInput.step = '0.1';
+        // Elements HTML de la note
+        this.lockedCheckbox = null;
+        this.noteInput = null;
+        this.coefInput = null;
+        this.htmlParent = htmlParent;
+        this.deleteButton = null;
 
-        // Label et input pour le coefficient
-        const labelCoef = document.createElement('label');
-        labelCoef.textContent = '⚖️ Coef :';
-        this.coefInput = document.createElement('input');
-        this.coefInput.type = 'number';
-        this.coefInput.step = '0.1';
-        this.coefInput.value = '1';
-
-        // Label et input pour l'état verrouillé
-        const labelLocked = document.createElement('label');
-        labelLocked.textContent = '🔒';
-        this.lockedInput = document.createElement('input');
-        this.lockedInput.type = 'checkbox';
-        // L'écouteur initial est supprimé pour ne pas mettre à jour directement ici
-
-        // Bouton pour supprimer la note avec emoji
-        this.deleteButton = document.createElement('button');
-        this.deleteButton.type = 'button';
-        this.deleteButton.textContent = '❌';
-        this.deleteButton.addEventListener('click', () => this.delete());
-
-        // Assemblage de la structure de la note
-        this.element.appendChild(labelNote);
-        this.element.appendChild(this.valueInput);
-        this.element.appendChild(labelCoef);
-        this.element.appendChild(this.coefInput);
-        this.element.appendChild(labelLocked);
-        this.element.appendChild(this.lockedInput);
-        this.element.appendChild(this.deleteButton);
+        this.createHtml();
+        this.setupListeners();
+        this.updateHtmlFromAttributes();
     }
 
-    // Méthode de mise à jour de l'état verrouillé de la note
-    updateLockState() {
-        const isLocked = this.lockedInput.checked;
-        this.valueInput.disabled = isLocked;
-        this.coefInput.disabled = isLocked;
+    createHtml() {
+        //     <li class="file" role="treeitem">
+        //     <span class="label">Note 5</span>
+        //     <span class="attributes">
+        //       <label>Note: <input type="number" value="0" aria-label="Note 5 pour Matière A"></label>
+        //       <label>Coeff: <input type="number" value="1" aria-label="Coeff de Note 5"></label>
+        //     </span>
+        //   </li>
+
+        let li = document.createElement('li');
+        li.className = 'file';
+        li.setAttribute('role', 'treeitem');
+        this.htmlParent.appendChild(li);
+
+        let span2 = document.createElement('span');
+        span2.className = 'attributes';
+        li.appendChild(span2);
+
+        let label = document.createElement('label');
+        label.textContent = 'Note : ';
+        span2.appendChild(label);
+
+        // Input pour la note
+        let input = document.createElement('input');
+        input.type = 'number';
+        input.value = '10';
+        input.step = '0.1';
+        input.setAttribute('aria-label', 'Note 5 pour Matière A');
+        input.classList.add('note-note-input');
+        span2.appendChild(input);
+
+        let label2 = document.createElement('label');
+        label2.textContent = 'Coeff : ';
+        span2.appendChild(label2);
+
+        // Input pour le coefficient
+        let input2 = document.createElement('input');
+        input2.type = 'number';
+        input2.value = '1';
+        input2.step = '0.1';
+        input2.setAttribute('aria-label', 'Coeff de Note 5');
+        input2.classList.add('note-coef-input');
+        span2.appendChild(input2);
+
+        let label3 = document.createElement('label');
+        // On initialise le label avec l'icône du cadenas ouvert (si décoché par défaut)
+        label3.textContent = '🔒';
+        span2.appendChild(label3);
+
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = 'lock';
+        checkbox.setAttribute('aria-label', 'Verrouiller la note');
+        span2.appendChild(checkbox);
+
+        let button = document.createElement('button');
+        button.className = 'delete-btn';
+        button.setAttribute('aria-label', 'Supprimer la note');
+        button.textContent = '🗑️';
+        span2.appendChild(button);
+
+        this.lockedCheckbox = checkbox;
+        this.noteInput = input;
+        this.coefInput = input2;
+        this.deleteButton = button;
     }
 
-    // Méthode de suppression de la note
-    delete() {
-        this.element.remove();
-        this.parentMatiere.removeNote(this);
-        this.parentMatiere.parentUE.parentCalculator.updateAll();
+    setupListeners() {
+        // Mise à jour des attributs de la note à chaque changement de l'input
+        this.lockedCheckbox.addEventListener('change', (e) => {
+            this.locked = this.lockedCheckbox.checked;
+        });
+
+        this.deleteButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.htmlParent.removeChild(this.deleteButton.parentElement.parentElement);
+        });
+
+        // Mise à jour des attributs de la note à chaque changement de l'input
+        this.noteInput.addEventListener('input', (e) => {
+            this.note = parseFloat(this.noteInput.value);
+            this.updateHtmlFromAttributes();
+        });
+
+        // Mise à jour des attributs de la note à chaque changement de l'input
+        this.coefInput.addEventListener('input', (e) => {
+            this.coef = parseFloat(this.coefInput.value);
+            this.updateHtmlFromAttributes();
+        });
     }
 
-    // Renvoie la valeur numérique de la note (ou 0 par défaut)
-    getValue() {
-        return parseFloat(this.valueInput.value) || 0;
+    updateHtmlFromAttributes() {
+        this.noteInput.value = this.note;
+        this.coefInput.value = this.coef;
+        this.lockedCheckbox.checked = this.locked;
     }
 
-    // Renvoie le coefficient de la note (ou 1 par défaut)
-    getCoefficient() {
-        return parseFloat(this.coefInput.value) || 1;
-    }
-
-    // Indique si la note est verrouillée
-    isLocked() {
-        return this.lockedInput.checked;
-    }
 }
 
 
 // Classe représentant une Matière
 class Matiere {
-    constructor(parentUE, index) {
-        this.parentUE = parentUE; // Référence à l'UE parente
-        this.element = document.createElement('fieldset');
-        this.element.className = 'matiere';
-        // Positionnement relatif pour placer le bouton de suppression
-        this.element.style.position = 'relative';
+    constructor(htmlParent) {
+        this.notes = [];
+        this.coef = 1;
+        this.moyenne = 10;
 
-        // Création du legend pour la matière
-        this.legend = document.createElement('legend');
-        this.legend.style.display = 'flex';
-        this.legend.style.justifyContent = 'space-between';
-        this.legend.style.alignItems = 'center';
+        // Elements HTML de la matière
+        this.coefInput = null;
+        this.moyenneInput = null;
+        this.htmlChilds = null;
+        this.htmlParent = htmlParent;
+        this.addChildButton = null;
+        this.collapseButton = null;
+        this.deleteButton = null;
 
-        this.legendLeft = document.createElement('span');
-        this.legendLeft.className = 'legend-left';
+        this.createHtml();
+        this.setupListeners();
 
-        // Input pour le nom de la matière avec un emoji
-        this.nameInput = document.createElement('input');
-        this.nameInput.type = 'text';
-        this.nameInput.value = 'Matière 🧮';
+        // Création d'une note par défaut
+        this.notes.push(new Note(this.htmlChilds));
+    }
+
+    createHtml() {
+        let li = document.createElement('li');
+        li.className = 'folder';
+        li.setAttribute('role', 'treeitem');
+        li.setAttribute('aria-expanded', 'true');
+        this.htmlParent.appendChild(li);
+
+        // Bouton pour replier/déplier la Matière
+        let button = document.createElement('button');
+        button.className = 'toggle-btn';
+        button.setAttribute('aria-label', 'Réduire/Développer');
+        button.textContent = '🔼';
+        li.appendChild(button);
+
+        // Label de la Matière
+        let span = document.createElement('span');
+        span.className = 'label';
+        span.textContent = 'Matière A';
+        li.appendChild(span);
+
+        // Attributs de la Matière (Note globale, Coeff)
+        let span2 = document.createElement('span');
+        span2.className = 'attributes';
+        li.appendChild(span2);
+
+        let label = document.createElement('label');
+        label.textContent = 'Note : ';
+        span2.appendChild(label);
+
+        // Input pour la moyenne de la matière
+        let input = document.createElement('input');
+        input.type = 'number';
+        input.value = '10';
+        input.step = '0.1';
+        input.setAttribute('aria-label', 'Note pour Matière A (UE1)');
+        input.classList.add('matiere-note-input');
+        span2.appendChild(input);
+
+        let label2 = document.createElement('label');
+        label2.textContent = 'Coeff : ';
+        span2.appendChild(label2);
 
         // Input pour le coefficient de la matière
-        this.coefInput = document.createElement('input');
-        this.coefInput.type = 'number';
-        this.coefInput.step = '0.1';
-        this.coefInput.value = '1';
+        let input2 = document.createElement('input');
+        input2.type = 'number';
+        input2.value = '1';
+        input2.step = '0.1';
+        input2.setAttribute('aria-label', 'Coeff pour Matière A (UE1)');
+        input2.classList.add('matiere-coef-input');
+        span2.appendChild(input2);
 
-        this.legendLeft.appendChild(this.nameInput);
-        this.legendLeft.appendChild(this.coefInput);
+        // Sous-liste (UL) pour les Notes
+        let ul = document.createElement('ul');
+        ul.setAttribute('role', 'group');
+        li.appendChild(ul);
 
-        // Input pour la moyenne de la matière (placé à droite)
-        this.moyenneInput = document.createElement('input');
-        this.moyenneInput.type = 'number';
-        this.moyenneInput.step = '0.1';
-        this.moyenneInput.className = 'moyenne-input';
+        // Bouton pour supprimer la matière
+        let button3 = document.createElement('button');
+        button3.className = 'delete-btn';
+        button3.setAttribute('aria-label', 'Supprimer la matière');
+        button3.textContent = '🗑️';
+        ul.appendChild(button3);
 
-        this.legend.appendChild(this.legendLeft);
-        this.legend.appendChild(this.moyenneInput);
-        this.element.appendChild(this.legend);
+        // Bouton pour ajouter une note
+        let button2 = document.createElement('button');
+        button2.className = 'add-btn';
+        button2.setAttribute('aria-label', 'Ajouter une note');
+        button2.textContent = '+ Note';
+        ul.appendChild(button2);
 
-        // Bouton supprimer pour la matière (en haut à droite avec emoji)
-        this.deleteButton = document.createElement('button');
-        this.deleteButton.type = 'button';
-        this.deleteButton.textContent = '❌';
-        this.deleteButton.className = 'delete-btn';
-        this.deleteButton.style.position = 'absolute';
-        this.deleteButton.style.top = '5px';
-        this.deleteButton.style.right = '5px';
-        this.element.appendChild(this.deleteButton);
-        this.deleteButton.addEventListener('click', () => this.delete());
 
-        // Container pour les notes
-        this.notesContainer = document.createElement('div');
-        this.notesContainer.className = 'notes';
-        this.element.appendChild(this.notesContainer);
 
-        // Tableau des notes
-        this.notes = [];
-        this.addNote(); // Ajoute une note par défaut
-
-        // Bouton pour ajouter une note avec emoji
-        this.addNoteButton = document.createElement('button');
-        this.addNoteButton.type = 'button';
-        this.addNoteButton.textContent = '➕ Ajouter une note';
-        this.notesContainer.appendChild(this.addNoteButton);
-        this.addNoteButton.addEventListener('click', () => this.addNote());
+        // Stockage dans l'objet pour usage ultérieur
+        this.moyenneInput = input;
+        this.coefInput = input2;
+        this.htmlChilds = ul;
+        this.addChildButton = button2;
+        this.collapseButton = button
+        this.deleteButton = button3;
     }
 
-    // Ajoute une nouvelle note à la matière
-    addNote() {
-        const note = new Note(this, this.notes.length + 1);
-        this.notes.push(note);
-        // Insère la note avant le bouton "Ajouter une note"
-        this.notesContainer.insertBefore(note.element, this.addNoteButton);
-    }
-
-    // Supprime une note du tableau de la matière
-    removeNote(note) {
-        this.notes = this.notes.filter(n => n !== note);
-    }
-
-    // Calcule la moyenne pondérée de la matière en fonction des notes
-    computeAverage() {
-        let sum = 0;
-        let totalCoef = 0;
-        this.notes.forEach(note => {
-            let value = note.getValue();
-            let coef = note.getCoefficient();
-            sum += value * coef;
-            totalCoef += coef;
+    setupListeners() {
+        // Système de collapse/expand
+        this.collapseButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.htmlChilds.classList.toggle('hidden');
+            if (this.htmlChilds.classList.contains('hidden')) {
+                this.collapseButton.textContent = '🔽';
+            } else {
+                this.collapseButton.textContent = '🔼';
+            }
         });
-        return totalCoef ? (sum / totalCoef) : 0;
+
+        // Ajout d'une note
+        this.addChildButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.notes.push(new Note(this.htmlChilds));
+        });
+
+        // Suppression de la matière
+        this.deleteButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.notes = [];
+            this.htmlParent.removeChild(this.htmlChilds.parentElement);
+        });
     }
 
-    // Met à jour l'input de moyenne de la matière
-    updateAverage() {
-        this.moyenneInput.value = this.computeAverage().toFixed(2);
-    }
-
-    // Méthode de mise à jour du background en fonction des notes verrouillées
-    updateLockState() {
-        const allLocked = this.notes.length > 0 && this.notes.every(note => note.isLocked());
-        this.element.style.backgroundColor = allLocked ? 'rgba(32, 153, 32, 0.2)' : '';
-        this.element.style.border = allLocked ? '1px solid green' : '';
-    }
-
-    // Supprime la matière de l'interface et du parent UE
-    delete() {
-        this.element.remove();
-        this.parentUE.removeMatiere(this);
-        this.parentUE.parentCalculator.updateAll();
+    updateHtmlFromAttributes() {
+        this.moyenneInput.value = this.moyenne;
+        this.coefInput.value = this.coef;
     }
 }
 
@@ -199,343 +261,317 @@ class Matiere {
 
 // Classe représentant une UE
 class UE {
-    constructor(parentCalculator, index) {
-        this.parentCalculator = parentCalculator; // Référence au Calculator
-        this.element = document.createElement('fieldset');
-        this.element.className = 'ue';
-        // Positionnement relatif pour le bouton de suppression
-        this.element.style.position = 'relative';
+    constructor(htmlParent) {
+        this.matieres = [];
+        this.coef = 1;
+        this.moyenne = 10;
 
-        // Création du legend pour l'UE
-        this.legend = document.createElement('legend');
-        this.legend.style.display = 'flex';
-        this.legend.style.justifyContent = 'space-between';
-        this.legend.style.alignItems = 'center';
+        // Elements HTML de l'UE
+        this.coefInput = null;
+        this.moyenneInput = null;
+        this.htmlChilds = null;
+        this.htmlParent = htmlParent;
+        this.addChildButton = null;
+        this.collapseButton = null;
+        this.deleteButton = null;
 
-        this.legendLeft = document.createElement('span');
-        this.legendLeft.className = 'legend-left';
+        this.createHtml();
+        this.setupListeners();
 
-        // Input pour le nom de l'UE avec emoji
-        this.nameInput = document.createElement('input');
-        this.nameInput.type = 'text';
-        this.nameInput.value = 'UE 🎓';
+        // Création d'une matière par défaut
+        this.matieres.push(new Matiere(this.htmlChilds));
+    }
+
+    createHtml() {
+        // <li class="folder" role="treeitem" aria-expanded="true">
+        // <button class="toggle-btn" aria-label="Réduire/Développer">🔼</button>
+        // <span class="label">UE 1</span>
+        // <span class="attributes">
+        //   <label>Note: <input type="number" value="0" aria-label="Note pour UE 1"></label>
+        //   <label>Coeff: <input type="number" value="1" aria-label="Coeff pour UE 1"></label>
+        // </span>
+        // <ul role="group">
+
+        let li = document.createElement('li');
+        li.className = 'folder';
+        li.setAttribute('role', 'treeitem');
+        li.setAttribute('aria-expanded', 'true');
+        this.htmlParent.appendChild(li);
+
+        let button = document.createElement('button');
+        button.className = 'toggle-btn';
+        button.setAttribute('aria-label', 'Réduire/Développer');
+        button.textContent = '🔼';
+        li.appendChild(button);
+
+        let span = document.createElement('span');
+        span.className = 'label';
+        span.textContent = 'UE 1';
+        li.appendChild(span);
+
+        let span2 = document.createElement('span');
+        span2.className = 'attributes';
+        li.appendChild(span2);
+
+        let label = document.createElement('label');
+        label.textContent = 'Note : ';
+        span2.appendChild(label);
+
+        // Input pour la moyenne de l'UE
+        let input = document.createElement('input');
+        input.type = 'number';
+        input.value = '10';
+        input.step = '0.1';
+        input.setAttribute('aria-label', 'Note pour UE 1');
+        input.classList.add('ue-note-input');
+        span2.appendChild(input);
+
+        let label2 = document.createElement('label');
+        label2.textContent = 'Coeff : ';
+        span2.appendChild(label2);
 
         // Input pour le coefficient de l'UE
-        this.coefInput = document.createElement('input');
-        this.coefInput.type = 'number';
-        this.coefInput.step = '0.1';
-        this.coefInput.value = '1';
+        let input2 = document.createElement('input');
+        input2.type = 'number';
+        input2.value = '1';
+        input2.step = '0.1';
+        input2.setAttribute('aria-label', 'Coeff pour UE 1');
+        input2.classList.add('ue-coef-input');
+        span2.appendChild(input2);
 
-        this.legendLeft.appendChild(this.nameInput);
-        this.legendLeft.appendChild(this.coefInput);
+        let ul = document.createElement('ul');
+        ul.setAttribute('role', 'group');
+        li.appendChild(ul);
 
-        // Input pour la moyenne de l'UE (placé à droite)
-        this.moyenneInput = document.createElement('input');
-        this.moyenneInput.type = 'number';
-        this.moyenneInput.step = '0.1';
-        this.moyenneInput.className = 'moyenne-input';
+        // Bouton pour supprimer l'UE
+        let button3 = document.createElement('button');
+        button3.className = 'delete-btn';
+        button3.setAttribute('aria-label', 'Supprimer l\'UE');
+        button3.textContent = '🗑️';
+        ul.appendChild(button3);
 
-        this.legend.appendChild(this.legendLeft);
-        this.legend.appendChild(this.moyenneInput);
-        this.element.appendChild(this.legend);
+        // Bouton pour ajouter une note
+        let button2 = document.createElement('button');
+        button2.className = 'add-btn';
+        button2.setAttribute('aria-label', 'Ajouter une note');
+        button2.textContent = '+ Matière';
+        ul.appendChild(button2);
 
-        // Bouton supprimer pour l'UE (en haut à droite avec emoji)
-        this.deleteButton = document.createElement('button');
-        this.deleteButton.type = 'button';
-        this.deleteButton.textContent = '❌';
-        this.deleteButton.className = 'delete-btn';
-        this.deleteButton.style.position = 'absolute';
-        this.deleteButton.style.top = '5px';
-        this.deleteButton.style.right = '5px';
-        this.element.appendChild(this.deleteButton);
-        this.deleteButton.addEventListener('click', () => this.delete());
-
-        // Bouton pour collapser/déplier l'UE
-        this.collapseButton = document.createElement('button');
-        this.collapseButton.type = 'button';
-        this.collapseButton.textContent = '🔽';
-        this.collapseButton.style.position = 'absolute';
-        this.collapseButton.style.top = '5px';
-        this.collapseButton.style.right = '50px';
-        this.collapseButton.classList.add('collapse-btn');
-        this.element.appendChild(this.collapseButton);
-
-        // Container pour les matières
-        this.matieresContainer = document.createElement('div');
-        this.element.appendChild(this.matieresContainer);
-
-        // Tableau des matières
-        this.matieres = [];
-        this.addMatiere(); // Ajoute une matière par défaut
-
-        // Bouton pour ajouter une matière avec emoji
-        this.addMatiereButton = document.createElement('button');
-        this.addMatiereButton.type = 'button';
-        this.addMatiereButton.textContent = '➕ Ajouter une matière';
-        this.element.appendChild(this.addMatiereButton);
-        this.addMatiereButton.addEventListener('click', () => this.addMatiere());
+        this.addChildButton = button2;
+        this.moyenneInput = input;
+        this.coefInput = input2;
+        this.htmlChilds = ul;
+        this.collapseButton = button;
+        this.deleteButton = button3
     }
 
-    // Ajoute une matière à l'UE
-    addMatiere() {
-        const matiere = new Matiere(this, this.matieres.length + 1);
-        this.matieres.push(matiere);
-        this.matieresContainer.appendChild(matiere.element);
-    }
-
-    // Supprime une matière du tableau de l'UE
-    removeMatiere(matiere) {
-        this.matieres = this.matieres.filter(m => m !== matiere);
-    }
-
-    // Calcule la moyenne pondérée de l'UE en fonction des moyennes des matières
-    computeAverage() {
-        let sum = 0;
-        let totalCoef = 0;
-        this.matieres.forEach(matiere => {
-            let avg = parseFloat(matiere.moyenneInput.value) || matiere.computeAverage();
-            let coef = parseFloat(matiere.coefInput.value) || 1;
-            sum += avg * coef;
-            totalCoef += coef;
+    setupListeners() {
+        // Système de collapse/expand
+        this.collapseButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.htmlChilds.classList.toggle('hidden');
+            if (this.htmlChilds.classList.contains('hidden')) {
+                this.collapseButton.textContent = '🔽';
+            } else {
+                this.collapseButton.textContent = '🔼';
+            }
         });
-        return totalCoef ? (sum / totalCoef) : 0;
+
+        // Ajout d'une matière
+        this.addChildButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.matieres.push(new Matiere(this.htmlChilds));
+        });
+
+        // Suppression de l'UE
+        this.deleteButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.matieres = [];
+            this.htmlParent.removeChild(this.htmlChilds.parentElement);
+        });
     }
 
-    // Met à jour l'input de moyenne de l'UE
-    updateAverage() {
-        this.moyenneInput.value = this.computeAverage().toFixed(2);
-    }
-
-    // Supprime l'UE de l'interface et du Calculator
-    delete() {
-        this.element.remove();
-        this.parentCalculator.removeUE(this);
-        this.parentCalculator.updateAll();
+    updateHtmlFromAttributes() {
+        this.moyenneInput.value = this.moyenne;
+        this.coefInput.value = this.coef;
     }
 }
 
 // Classe principale qui gère l'ensemble du calculateur
-class Calculator {
+class Global {
     constructor() {
-        // Crée et insère le conteneur principal dans le body
-        this.container = document.createElement('div');
-        this.container.id = 'calculator-container';
-        document.body.appendChild(this.container);
+        // Attributs
+        this.UEs = [];
+        this.moyenne = 0;
 
-        // Création du fieldset pour la note générale avec emoji
-        this.noteGeneraleFieldset = document.createElement('fieldset');
-        this.noteGeneraleFieldset.className = 'note-generale';
-        const noteLeg = document.createElement('legend');
-        noteLeg.textContent = 'Note Générale 🌟';
-        this.noteGeneraleFieldset.appendChild(noteLeg);
-        this.noteGeneraleInput = document.createElement('input');
-        this.noteGeneraleInput.type = 'number';
-        this.noteGeneraleInput.step = '0.1';
-        this.noteGeneraleFieldset.appendChild(this.noteGeneraleInput);
-        this.container.appendChild(this.noteGeneraleFieldset);
+        // Element HTML du calculateur
+        this.moyenneInput = null;
+        this.htmlChilds = null;
+        this.addChildButton = null;
+        this.collapseButton = null;
 
-        // Container pour les UE
-        this.ueContainer = document.createElement('div');
-        this.ueContainer.id = 'ue-container';
-        this.container.appendChild(this.ueContainer);
+        this.createHtml();
 
-        this.ues = [];
-        this.addUE(); // Ajoute une UE par défaut
-
-        // Bouton pour ajouter une UE avec emoji
-        this.addUEButton = document.createElement('button');
-        this.addUEButton.type = 'button';
-        this.addUEButton.textContent = '➕ Ajouter une UE';
-        this.container.appendChild(this.addUEButton);
-        this.addUEButton.addEventListener('click', () => this.addUE());
-
-        // Ajout 'un bouton d'import et d'export
-        const importButton = document.createElement('button');
-        importButton.textContent = '📥 Importer'
-        importButton.style.marginRight = '10px';
-        importButton.style.marginTop = '10px';
-        importButton.id = 'importButton';
-
-        const exportButton = document.createElement('button');
-        exportButton.textContent = '📤 Exporter'
-        exportButton.style.marginTop = '10px';
-        exportButton.id = 'exportButton';
-
-        document.body.appendChild(importButton);
-        document.body.appendChild(exportButton);
-
-        importButton.addEventListener('click', () => this.importData());
-        exportButton.addEventListener('click', () => this.exportData());
-
+        this.setupListeners();
     }
 
-    // Ajoute une UE au calculateur
-    addUE() {
-        const ue = new UE(this, this.ues.length + 1);
-        this.ues.push(ue);
-        this.ueContainer.appendChild(ue.element);
+    // Méthode initiale de création de l'arbre HTML
+    createHtml() {
+        // <div class="tree" role="tree">
+        // <ul>
+        //   <li class="folder" role="treeitem" aria-expanded="true">
+        //     <button class="toggle-btn" aria-label="Réduire/Développer">🔼</button>
+        //     <span class="label">Global</span>
+        //     <span class="attributes">
+        //       <label>Moyenne : <input type="number" value="0" aria-label="Note pour Programme"></label>
+        //     </span>
+        //     <ul role="group">
+
+        let div = document.createElement('div');
+        div.className = 'tree';
+        div.setAttribute('role', 'tree');
+
+        let ul = document.createElement('ul');
+        div.appendChild(ul);
+
+        let li = document.createElement('li');
+        li.className = 'folder';
+        li.setAttribute('role', 'treeitem');
+        li.setAttribute('aria-expanded', 'true');
+        ul.appendChild(li);
+
+        let button = document.createElement('button');
+        button.className = 'toggle-btn';
+        button.setAttribute('aria-label', 'Réduire/Développer');
+        button.textContent = '🔼';
+        li.appendChild(button);
+
+        let span = document.createElement('span');
+        span.className = 'label';
+        span.textContent = 'Global';
+        li.appendChild(span);
+
+        let span2 = document.createElement('span');
+        span2.className = 'attributes';
+        li.appendChild(span2);
+
+        let label = document.createElement('label');
+        label.textContent = 'Moyenne : ';
+        span2.appendChild(label);
+
+        // Input pour la moyenne générale
+        let input = document.createElement('input');
+        input.type = 'number';
+        input.value = '0';
+        input.step = '0.1';
+        input.setAttribute('aria-label', 'Note pour Programme');
+        span2.appendChild(input);
+
+        let ul2 = document.createElement('ul');
+        ul2.setAttribute('role', 'group');
+        li.appendChild(ul2);
+
+
+        // Bouton pour ajouter une note
+        let button2 = document.createElement('button');
+        button2.className = 'add-btn';
+        button2.setAttribute('aria-label', 'Ajouter une note');
+        button2.textContent = '+ Unité d\'Enseignement';
+        ul2.appendChild(button2);
+
+        document.body.appendChild(div);
+
+        this.collapseButton = button;
+        this.addChildButton = button2;
+        this.moyenneInput = input;
+        this.htmlChilds = ul2;
     }
 
-    // Supprime une UE du tableau du calculateur
-    removeUE(ue) {
-        this.ues = this.ues.filter(u => u !== ue);
-    }
-
-    // Calcule la moyenne générale en fonction des UE
-    computeGeneralAverage() {
-        let sum = 0;
-        let totalCoef = 0;
-        this.ues.forEach(ue => {
-            let avg = parseFloat(ue.moyenneInput.value) || ue.computeAverage();
-            let coef = parseFloat(ue.coefInput.value) || 1;
-            sum += avg * coef;
-            totalCoef += coef;
-        });
-        return totalCoef ? (sum / totalCoef) : 0;
-    }
-
-    // Met à jour l'input de la note générale
-    updateGeneralAverage() {
-        this.noteGeneraleInput.value = this.computeGeneralAverage().toFixed(2);
-    }
-
-    // Met à jour toutes les moyennes (matières, UE, générale)
-    updateAll() {
-        this.ues.forEach(ue => {
-            ue.matieres.forEach(matiere => {
-                // Met à jour l'état verrouillé de chaque note
-                matiere.notes.forEach(note => note.updateLockState());
-                // Met à jour le background de la matière
-                matiere.updateLockState();
-                // Met à jour la moyenne de la matière
-                matiere.updateAverage();
-            });
-            ue.updateAverage();
-        });
-        this.updateGeneralAverage();
-    }
-
-    // Méthode pour exporter les données du calculateur
-    exportData() {
-        const data = {
-            noteGenerale: this.noteGeneraleInput.value,
-            ues: this.ues.map(ue => ({
-                name: ue.nameInput.value,
-                coef: ue.coefInput.value,
-                matieres: ue.matieres.map(matiere => ({
-                    name: matiere.nameInput.value,
-                    coef: matiere.coefInput.value,
-                    moyenne: matiere.moyenneInput.value,
-                    notes: matiere.notes.map(note => ({
-                        value: note.valueInput.value,
-                        coef: note.coefInput.value,
-                        locked: note.lockedInput.checked
-                    }))
-                }))
-            }))
-        };
-        const dataStr = JSON.stringify(data);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'data.json';
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-
-    // Méthode pour importer les données du calculateur
-    // Méthode d'importation refaite dans la classe Calculator
-    importData() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-
-        input.onchange = async (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            try {
-                const text = await file.text(); // Lecture du contenu du fichier en mode asynchrone
-                const data = JSON.parse(text);
-
-                // Réinitialisation de l'interface
-                this.noteGeneraleInput.value = data.noteGenerale;
-                // Supprime toutes les UE existantes
-                this.ues.forEach(ue => ue.element.remove());
-                this.ues = [];
-
-                // Reconstruit l'ensemble des UE à partir des données importées
-                data.ues.forEach(ueData => {
-                    const ue = new UE(this);
-                    ue.nameInput.value = ueData.name;
-                    ue.coefInput.value = ueData.coef;
-
-                    // Supprime la matière par défaut ajoutée lors de la création de l'UE
-                    ue.matieres.forEach(matiere => matiere.element.remove());
-                    ue.matieres = [];
-
-                    ueData.matieres.forEach(matiereData => {
-                        const matiere = new Matiere(ue);
-                        matiere.nameInput.value = matiereData.name;
-                        matiere.coefInput.value = matiereData.coef;
-                        matiere.moyenneInput.value = matiereData.moyenne;
-
-                        // Supprime la note par défaut ajoutée lors de la création de la matière
-                        matiere.notes.forEach(note => note.element.remove());
-                        matiere.notes = [];
-
-                        matiereData.notes.forEach(noteData => {
-                            const note = new Note(matiere, matiere.notes.length + 1);
-                            note.valueInput.value = noteData.value;
-                            note.coefInput.value = noteData.coef;
-                            note.lockedInput.checked = noteData.locked;
-                            // Insère la note avant le bouton "Ajouter une note"
-                            matiere.notes.push(note);
-                            matiere.notesContainer.insertBefore(note.element, matiere.addNoteButton);
-                        });
-                        ue.matieres.push(matiere);
-                        ue.matieresContainer.appendChild(matiere.element);
-                    });
-                    this.ues.push(ue);
-                    this.ueContainer.appendChild(ue.element);
-                });
-
-                this.updateAll();
-            } catch (error) {
-                console.error('Erreur lors de l\'importation du fichier:', error);
+    setupListeners() {
+        // Système de collapse/expand
+        this.collapseButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.htmlChilds.classList.toggle('hidden');
+            if (this.htmlChilds.classList.contains('hidden')) {
+                this.collapseButton.textContent = '🔽';
+            } else {
+                this.collapseButton.textContent = '🔼';
             }
-        };
+        });
 
-        input.click();
+        // Ajout d'une UE
+        this.addChildButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.UEs.push(new UE(this.htmlChilds));
+        });
+
+        // Mise à jour de la moyenne générale à chaque changement de l'input
+        document.body.addEventListener('input', (e) => {
+            if (e.target.matches('.note-note-input, .note-coef-input')) {
+                this.updateAllMoyennesFromNotes();
+                this.updateAllMoyennesFromNotes();
+                this.updateAllMoyennesFromNotes();
+            }
+        });
+    }
+
+    updateHtmlFromAttributes() {
+        this.moyenneInput.value = this.moyenne;
+    }
+
+    updateAllMoyennesFromNotes() {
+        this.debug();
+        let sommeUEs = 0;
+        let sommeCoeffsUE = 0;
+        this.UEs.forEach((ue) => {
+            sommeUEs += ue.moyenne * ue.coef;
+            sommeCoeffsUE += ue.coef;
+            let sommeMatieres = 0;
+            let sommeCoeffsMat = 0;
+            ue.matieres.forEach((matiere) => {
+                sommeMatieres += matiere.moyenne * matiere.coef;
+                sommeCoeffsMat += matiere.coef;
+                let sommeNotes = 0;
+                let sommeCoeffsNotes = 0;
+                matiere.notes.forEach((note) => {
+                    sommeNotes += note.note * note.coef;
+                    sommeCoeffsNotes += note.coef;
+                });
+                matiere.moyenne = sommeNotes / sommeCoeffsNotes;
+                matiere.updateHtmlFromAttributes();
+            });
+            ue.moyenne = sommeMatieres / sommeCoeffsMat;
+            ue.updateHtmlFromAttributes();
+        });
+        this.moyenne = sommeUEs / sommeCoeffsUE;
+        this.updateHtmlFromAttributes();
+    }
+
+
+    debug() {
+        // clear the console
+        console.clear();
+        console.log('DEBUG');
+        for (let ue of this.UEs) {
+            console.log('UE', ue.moyenne, ue.coef);
+            for (let matiere of ue.matieres) {
+                console.log('  Matiere', matiere.moyenne, matiere.coef);
+                for (let note of matiere.notes) {
+                    console.log('    Note', note.note, note.coef);
+                }
+            }
+        }
     }
 
 }
 
 
+
 // Dès que le DOM est chargé, on vide le body et on initialise le calculateur
 document.addEventListener('DOMContentLoaded', () => {
-    // Supprime le contenu initial du body
-    document.body.innerHTML = '';
-    // Initialisation du Calculator
-    const calculator = new Calculator();
-
-    // Mise à jour des moyennes dès qu'un input de type number change
-    document.body.addEventListener('change', event => {
-        if (event.target && (event.target.matches('input[type="number"]') || event.target.matches('input[type="checkbox"]'))) {
-            calculator.updateAll();
-        }
-    });
-
-
-
+    const global = new Global();
 });
 
 
-document.addEventListener('click', function (event) {
-    const legend = event.target.closest('.ue .collapse-btn');
-    if (legend) {
-        const ueFieldset = legend.parentElement;
-        ueFieldset.classList.toggle('collapsed');
-    }
-});
+
+

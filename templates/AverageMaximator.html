@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Calculateur de moyenne</title>
+  <script src="../static/js/calculatorTest.js" defer></script>
+  <style>
+    /* Styles généraux */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Conteneur de l'arborescence */
+    .tree {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Liste de l'arborescence */
+    .tree ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0 0 0 1.5rem;
+      /* Légère indentation */
+      position: relative;
+    }
+
+    /* Chaque élément (UE, Matière ou Note) */
+    .tree li {
+      position: relative;
+      margin: 0.5rem 0;
+      padding-left: 1.2rem;
+      /* Espace pour le bouton de toggling */
+      line-height: 1.4;
+    }
+
+    /*
+      Les pseudo-éléments dessinent les traits verticaux et horizontaux
+      pour donner un effet "arbre".
+    */
+    .tree li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.9rem;
+      width: 1rem;
+      height: 0;
+      border-bottom: 1px solid #ccc;
+      /* Trait horizontal */
+    }
+
+    .tree li::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid #ccc;
+      /* Trait vertical */
+    }
+
+    /* On coupe le trait vertical pour le dernier élément du parent */
+    .tree li:last-child::after {
+      height: 0.9rem;
+    }
+
+    /* Styles pour les dossiers (UE, Matière) et les notes */
+    .folder>.label {
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .file>.label {
+      font-style: italic;
+      cursor: default;
+    }
+
+    /* Bouton de collapse/expand */
+    .toggle-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      margin-right: 0.3rem;
+      font-size: 0.9rem;
+    }
+
+    .toggle-btn:hover,
+    .toggle-btn:focus {
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    /* Inputs de note et de coefficient */
+    .attributes {
+      margin-left: auto;
+      display: inline-flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-left: 1rem;
+      /* Décalage pour séparer les inputs du nom */
+    }
+
+    .attributes label {
+      font-size: 0.85rem;
+    }
+
+    .attributes input {
+      width: 60px;
+      padding: 0.2rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    /* Masquer les sous-listes */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Arborescence : UE, Matières et Notes</h1>
+
+  <script>
+    // Gestion des boutons pour afficher/masquer les sous-listes
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggleButtons = document.querySelectorAll('.toggle-btn');
+      toggleButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+          e.stopPropagation();
+          const parentLi = this.parentElement;
+          const childUl = parentLi.querySelector("ul");
+          if (childUl) {
+            if (childUl.classList.contains("hidden")) {
+              childUl.classList.remove("hidden");
+              this.textContent = "[-]";
+              parentLi.setAttribute("aria-expanded", "true");
+            } else {
+              childUl.classList.add("hidden");
+              this.textContent = "[+]";
+              parentLi.setAttribute("aria-expanded", "false");
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
