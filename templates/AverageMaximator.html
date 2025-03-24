@@ -140,32 +140,9 @@
 </head>
 
 <body>
+  <data style="display: none;" id="json">{{ data | tojson }}</data>
   <h1>Arborescence : UE, Matières et Notes</h1>
 
-  <script>
-    // Gestion des boutons pour afficher/masquer les sous-listes
-    document.addEventListener("DOMContentLoaded", function () {
-      const toggleButtons = document.querySelectorAll('.toggle-btn');
-      toggleButtons.forEach(button => {
-        button.addEventListener('click', function (e) {
-          e.stopPropagation();
-          const parentLi = this.parentElement;
-          const childUl = parentLi.querySelector("ul");
-          if (childUl) {
-            if (childUl.classList.contains("hidden")) {
-              childUl.classList.remove("hidden");
-              this.textContent = "[-]";
-              parentLi.setAttribute("aria-expanded", "true");
-            } else {
-              childUl.classList.add("hidden");
-              this.textContent = "[+]";
-              parentLi.setAttribute("aria-expanded", "false");
-            }
-          }
-        });
-      });
-    });
-  </script>
 </body>
 
 </html>
