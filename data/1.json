@@ -1,0 +1,271 @@
+{
+   "moyenne": 15.202042105263157,
+   "UEs": [
+      {
+         "moyenne": 15.8188,
+         "coef": 5,
+         "name": "UV 1 ",
+         "matieres": [
+            {
+               "moyenne": 10.3,
+               "coef": 2,
+               "name": "Base  sur les r\u00e9saux",
+               "notes": [
+                  {
+                     "note": 10.3,
+                     "coef": 2,
+                     "locked": true
+                  }
+               ]
+            },
+            {
+               "moyenne": 13.714,
+               "coef": 2,
+               "name": "windows",
+               "notes": [
+                  {
+                     "note": 13.714,
+                     "coef": 2,
+                     "locked": true
+                  }
+               ]
+            },
+            {
+               "moyenne": 16.08,
+               "coef": 2,
+               "name": "Linux",
+               "notes": [
+                  {
+                     "note": 16.08,
+                     "coef": 1,
+                     "locked": true
+                  }
+               ]
+            },
+            {
+               "moyenne": 19.5,
+               "coef": 4,
+               "name": "HTML/CSS",
+               "notes": [
+                  {
+                     "note": 19.5,
+                     "coef": 1,
+                     "locked": true
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "moyenne": 16.5076,
+         "coef": 11,
+         "name": "UV 2",
+         "matieres": [
+            {
+               "moyenne": 16.67,
+               "coef": 1,
+               "name": "S\u00e9curit\u00e9 des SI / Cyber",
+               "notes": [
+                  {
+                     "note": 16.67,
+                     "coef": 1,
+                     "locked": true
+                  }
+               ]
+            },
+            {
+               "moyenne": 19.25,
+               "coef": 2,
+               "name": "Algorithmique",
+               "notes": [
+                  {
+                     "note": 19.25,
+                     "coef": 1,
+                     "locked": true
+                  }
+               ]
+            },
+            {
+               "moyenne": 16.07,
+               "coef": 2,
+               "name": "COO",
+               "notes": [
+                  {
+                     "note": 16.07,
+                     "coef": 1,
+                     "locked": true
+                  }
+               ]
+            },
+            {
+               "moyenne": 15.95,
+               "coef": 4,
+               "name": "JavaBase",
+               "notes": [
+                  {
+                     "note": 16.9,
+                     "coef": 1,
+                     "locked": true
+                  },
+                  {
+                     "note": 15,
+                     "coef": 1,
+                     "locked": false
+                  }
+               ]
+            },
+            {
+               "moyenne": 20,
+               "coef": 2,
+               "name": "JavaScript",
+               "notes": [
+                  {
+                     "note": 20,
+                     "coef": 1,
+                     "locked": true
+                  }
+               ]
+            },
+            {
+               "moyenne": 14,
+               "coef": 2,
+               "name": "XML",
+               "notes": [
+                  {
+                     "note": 14,
+                     "coef": 1,
+                     "locked": false
+                  }
+               ]
+            },
+            {
+               "moyenne": 14.252,
+               "coef": 2,
+               "name": "BDD",
+               "notes": [
+                  {
+                     "note": 14.252,
+                     "coef": 1,
+                     "locked": true
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "moyenne": 14.642857142857142,
+         "coef": 14,
+         "name": "UV 3",
+         "matieres": [
+            {
+               "moyenne": 12,
+               "coef": 3,
+               "name": "SQL",
+               "notes": [
+                  {
+                     "note": 19.4,
+                     "coef": 1,
+                     "locked": true
+                  },
+                  {
+                     "note": 8.3,
+                     "coef": 2,
+                     "locked": false
+                  }
+               ]
+            },
+            {
+               "moyenne": 16,
+               "coef": 4,
+               "name": "Java Avanc\u00e9",
+               "notes": [
+                  {
+                     "note": 16,
+                     "coef": 1,
+                     "locked": false
+                  }
+               ]
+            },
+            {
+               "moyenne": 15,
+               "coef": 5,
+               "name": "JEE",
+               "notes": [
+                  {
+                     "note": 15,
+                     "coef": 1,
+                     "locked": false
+                  }
+               ]
+            },
+            {
+               "moyenne": 15,
+               "coef": 2,
+               "name": "S\u00e9curit\u00e9 applicative",
+               "notes": [
+                  {
+                     "note": 15,
+                     "coef": 1,
+                     "locked": false
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "moyenne": 14,
+         "coef": 8,
+         "name": "UV 4",
+         "matieres": [
+            {
+               "moyenne": 14,
+               "coef": 2,
+               "name": "ANASI",
+               "notes": [
+                  {
+                     "note": 14,
+                     "coef": 1,
+                     "locked": false
+                  }
+               ]
+            },
+            {
+               "moyenne": 14,
+               "coef": 2,
+               "name": "Archi Sys",
+               "notes": [
+                  {
+                     "note": 14,
+                     "coef": 1,
+                     "locked": false
+                  }
+               ]
+            },
+            {
+               "moyenne": 14,
+               "coef": 1,
+               "name": "Gestion projet",
+               "notes": [
+                  {
+                     "note": 14,
+                     "coef": 1,
+                     "locked": false
+                  }
+               ]
+            },
+            {
+               "moyenne": 14,
+               "coef": 1,
+               "name": "Projet cursurs",
+               "notes": [
+                  {
+                     "note": 14,
+                     "coef": 1,
+                     "locked": false
+                  }
+               ]
+            }
+         ]
+      }
+   ]
+}
