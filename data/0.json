@@ -91,9 +91,9 @@
                "name": "COO",
                "notes": [
                   {
-                     "note": 15,
+                     "note": 16.07,
                      "coef": 1,
-                     "locked": false
+                     "locked": true
                   }
                ]
             },
