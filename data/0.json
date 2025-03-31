@@ -1,5 +1,5 @@
 {
-   "moyenne": 15.276533333333335,
+   "moyenne": 15.473971929824563,
    "UEs": [
       {
          "moyenne": 15.8188,
@@ -57,8 +57,8 @@
          ]
       },
       {
-         "moyenne": 16.76493333333333,
-         "coef": 11,
+         "moyenne": 16.774266666666666,
+         "coef": 15,
          "name": "UV 2",
          "matieres": [
             {
@@ -86,7 +86,7 @@
                ]
             },
             {
-               "moyenne": 15,
+               "moyenne": 16.07,
                "coef": 2,
                "name": "COO",
                "notes": [
@@ -98,7 +98,7 @@
                ]
             },
             {
-               "moyenne": 15.95,
+               "moyenne": 17.45,
                "coef": 4,
                "name": "JavaBase",
                "notes": [
@@ -108,7 +108,7 @@
                      "locked": true
                   },
                   {
-                     "note": 15,
+                     "note": 18,
                      "coef": 1,
                      "locked": false
                   }
@@ -127,12 +127,12 @@
                ]
             },
             {
-               "moyenne": 17,
+               "moyenne": 13,
                "coef": 2,
                "name": "XML",
                "notes": [
                   {
-                     "note": 17,
+                     "note": 13,
                      "coef": 1,
                      "locked": false
                   }
@@ -153,12 +153,12 @@
          ]
       },
       {
-         "moyenne": 14.642857142857142,
+         "moyenne": 15.171428571428573,
          "coef": 14,
          "name": "UV 3",
          "matieres": [
             {
-               "moyenne": 12,
+               "moyenne": 14.466666666666667,
                "coef": 3,
                "name": "SQL",
                "notes": [
@@ -168,7 +168,7 @@
                      "locked": true
                   },
                   {
-                     "note": 8.3,
+                     "note": 12,
                      "coef": 2,
                      "locked": false
                   }
