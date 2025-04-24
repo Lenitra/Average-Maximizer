@@ -108,9 +108,9 @@
                      "locked": true
                   },
                   {
-                     "note": 17,
+                     "note": 16.4821,
                      "coef": 1,
-                     "locked": false
+                     "locked": true
                   }
                ]
             },
@@ -132,9 +132,9 @@
                "name": "XML",
                "notes": [
                   {
-                     "note": 13,
+                     "note": 12.093,
                      "coef": 1,
-                     "locked": false
+                     "locked": true
                   }
                ]
             },
